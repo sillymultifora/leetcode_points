@@ -5,7 +5,7 @@ This script calculates the estimated date you'll reach your LeetCode points targ
 ## Usage
 
 ```bash
-python script.py <current> [target] [--today-collected] [--biweekly-contest] [--weekly-contest] [--weekly-premium]
+python main.py <current> [target] [--today-collected] [--biweekly-contest] [--weekly-contest] [--weekly-premium]
 ```
 
 ## Arguments
