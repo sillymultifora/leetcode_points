@@ -28,7 +28,12 @@ def next_weekly_date(day: datetime) -> datetime:
 
 
 def get_final_date(
-    date: datetime, current: int, target: int, is_biweekly: bool, is_weekly: bool
+    date: datetime,
+    current: int,
+    target: int,
+    is_biweekly: bool,
+    is_weekly: bool,
+    is_weekly_premium: bool,
 ) -> datetime:
     biweekly_date = BIWEEKLY_START_DATE
     weekly_date = WEEKLY_START_DATE
@@ -41,10 +46,13 @@ def get_final_date(
         current += DAILY
         if date.day == 25:
             current += TWENTY_FIVE_DAYS
-        if calendar.weekday(date.year, date.month, date.day) == calendar.SATURDAY:
-            current += PREMIUM_WEEKLY
         if calendar.weekday(date.year, date.month, date.day) == calendar.MONDAY:
             current += MONDAY_LUCK
+        if (
+            is_weekly_premium
+            and calendar.weekday(date.year, date.month, date.day) == calendar.SATURDAY
+        ):
+            current += PREMIUM_WEEKLY
         if is_biweekly and date == biweekly_date:
             current += CONTEST
             if (
@@ -64,16 +72,52 @@ def get_final_date(
 
 if __name__ == "__main__":
     parser = ArgumentParser()
-    parser.add_argument("current", type=int)
-    parser.add_argument("target", type=int)
-    parser.add_argument("is_biweekly", type=bool)
-    parser.add_argument("is_weekly", type=bool)
+
+    parser.add_argument(
+        "current", type=int, help="Current number of points you already have."
+    )
+    parser.add_argument(
+        "target",
+        type=int,
+        nargs="?",
+        default=7200,
+        help="Target number of points to achieve (default: 7200).",
+    )
+
+    parser.add_argument(
+        "--today-collected",
+        action="store_true",
+        help="Flag indicating you have already collected today's points.",
+    )
+    parser.add_argument(
+        "--biweekly-contest",
+        action="store_true",
+        help="Flag indicating you participate in every biweekly contest.",
+    )
+    parser.add_argument(
+        "--weekly-contest",
+        action="store_true",
+        help="Flag indicating you participate in every weekly contest.",
+    )
+    parser.add_argument(
+        "--weekly-premium",
+        action="store_true",
+        help="Flag indicating you solve premium weekly LeetCode problems.",
+    )
+
     args = parser.parse_args()
-    current = args.current
-    target = args.target
-    is_biweekly = args.is_biweekly
-    is_weekly = args.is_weekly
+
     utc_dt = datetime.utcnow()
+    if args.today_collected:
+        utc_dt += timedelta(days=1)
     utc_dt = utc_dt.replace(hour=0, minute=0, second=0, microsecond=0)
-    final_date = get_final_date(utc_dt, current, target, is_biweekly, is_weekly)
+
+    final_date = get_final_date(
+        utc_dt,
+        args.current,
+        args.target,
+        args.biweekly_contest,
+        args.weekly_contest,
+        args.weekly_premium,
+    )
     print(final_date)
