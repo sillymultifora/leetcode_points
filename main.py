@@ -1,6 +1,6 @@
 import calendar
 from argparse import ArgumentParser
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 
 # LC Points constants
 DAILY = 11
@@ -11,12 +11,8 @@ JOIN_TWO_CONTEST = 35
 PREMIUM_WEEKLY = 35
 MONDAY_LUCK = 10
 # LC Date constants
-BIWEEKLY_START_DATE = datetime(
-    2025, 3, 15, 0, 0
-)  #  original with hours and minutes: datetime(2025, 3, 15, 15, 30)
-WEEKLY_START_DATE = datetime(
-    2025, 3, 16, 0, 0
-)  #  original with hours and minutes: datetime(2025, 3, 15, 3, 30)
+BIWEEKLY_START_DATE = datetime(2025, 1, 4, tzinfo=UTC)
+WEEKLY_START_DATE = datetime(2025, 1, 5, tzinfo=UTC)
 
 
 def next_biweekly_date(day: datetime) -> datetime:
@@ -27,6 +23,12 @@ def next_weekly_date(day: datetime) -> datetime:
     return day + timedelta(days=7)
 
 
+def check_date(date: datetime):
+    min_date = datetime(2025, 1, 1, tzinfo=UTC)
+    if date < min_date:
+        raise ValueError(f"Date should start from 2025 year, but got {date}")
+
+
 def get_final_date(
     date: datetime,
     current: int,
@@ -35,6 +37,7 @@ def get_final_date(
     is_weekly: bool,
     is_weekly_premium: bool,
 ) -> datetime:
+    check_date(date)
     biweekly_date = BIWEEKLY_START_DATE
     weekly_date = WEEKLY_START_DATE
     while date > biweekly_date:
@@ -107,7 +110,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    utc_dt = datetime.utcnow()
+    utc_dt = datetime.now(UTC)
     if args.today_collected:
         utc_dt += timedelta(days=1)
     utc_dt = utc_dt.replace(hour=0, minute=0, second=0, microsecond=0)
@@ -120,4 +123,5 @@ if __name__ == "__main__":
         args.weekly_contest,
         args.weekly_premium,
     )
-    print(final_date)
+    msg = f"You will reach your target on {final_date}"
+    print(msg)
