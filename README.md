@@ -1,37 +1,39 @@
-# LeetCode Points Progress
+# 🚀 LeetCode Points Progress 🚀
 
-This script calculates the estimated date you'll reach your LeetCode points target based on your current points, daily collection habits, and contest participation.
+Tired of manually calculating when you'll finally hit your LeetCode points goal? 🥱 Let this handy script handle the math and predict your victory date! 🏆 Spend less time crunching numbers and more time crushing problems! 🔥
 
-## Usage
+## 🚦 Usage
 
 ```bash
 python main.py <current> [target] [--today-collected] [--biweekly-contest] [--weekly-contest] [--weekly-premium]
 ```
 
-## Arguments
+## 🎯 Arguments
 
-### Required
+### ✅ Required
 
-- **`current`** *(integer)*: Your current number of LeetCode points.
+- **`current`** *(integer)*: Your current LeetCode points—show off your progress!
 
-### Optional
+### 🎲 Optional
 
-- **`target`** *(integer, default: 7200)*: Your target number of points.
+- **`target`** *(integer, default: 7200)*: Your ultimate LeetCode points goal. Aim high!
 
-## Optional Flags
+## 🚩 Optional Flags
 
-These flags default to `False`. Specify them in the command line to activate.
+These cool flags default to `False`. Activate them to level-up your prediction!
 
-- **`--today-collected`**: Indicates today's points have already been collected.
-- **`--biweekly-contest`**: Includes points earned from participating in every biweekly contest.
-- **`--weekly-contest`**: Includes points earned from participating in every weekly contest.
-- **`--weekly-premium`**: Includes points earned by solving premium weekly LeetCode problems.
+- **`--today-collected`**: Already grabbed today's points? Let the script know!
+- **`--biweekly-contest`**: Adds points for being a biweekly contest regular. Stay consistent!
+- **`--weekly-contest`**: Boost your points prediction with weekly contest participation.
+- **`--weekly-premium`**: Solve premium weekly LeetCode problems and rake in extra points!
 
-## Example
+## 🎉 Example
 
-To calculate when you'll reach 7200 points from your current 3500 points, assuming you've collected today's points and regularly participate in weekly and biweekly contests:
+Want to see when you'll celebrate hitting 7200 points, starting from your impressive 3500 points and considering today's progress plus regular contest participation? Easy!
 
 ```bash
-python script.py 3500 --today-collected --weekly-contest --biweekly-contest
+python main.py 3500 --today-collected --weekly-contest --biweekly-contest
 ```
+
+Now kick back, relax, and let the script do the math magic. 🎩✨ Less counting, more coding—happy problem-solving! 💻🧠
 
