@@ -1,6 +1,6 @@
 import calendar
 from argparse import ArgumentParser
-from datetime import datetime, timedelta, UTC
+from datetime import UTC, datetime, timedelta
 
 # LC Points constants
 DAILY = 11
@@ -23,7 +23,7 @@ def next_weekly_date(day: datetime) -> datetime:
     return day + timedelta(days=7)
 
 
-def check_date(date: datetime):
+def check_date(date: datetime) -> None:
     min_date = datetime(2025, 1, 1, tzinfo=UTC)
     if date < min_date:
         raise ValueError(f"Date should start from 2025 year, but got {date}")
@@ -31,13 +31,13 @@ def check_date(date: datetime):
 
 def get_final_date(
     date: datetime,
-    current: int,
     target: int,
     is_biweekly: bool,
     is_weekly: bool,
     is_weekly_premium: bool,
 ) -> datetime:
     check_date(date)
+    current = 0
     biweekly_date = BIWEEKLY_START_DATE
     weekly_date = WEEKLY_START_DATE
     while date > biweekly_date:
@@ -117,8 +117,7 @@ if __name__ == "__main__":
 
     final_date = get_final_date(
         utc_dt,
-        args.current,
-        args.target,
+        args.target - args.current,
         args.biweekly_contest,
         args.weekly_contest,
         args.weekly_premium,
