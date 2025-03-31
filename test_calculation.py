@@ -1,9 +1,16 @@
+"""Tests for the LeetCode points calculator module."""
+
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 
 import pytest
 
-from main import get_final_date
+from main import (
+    BIWEEKLY_START_DATE,
+    WEEKLY_START_DATE,
+    get_final_date,
+    next_biweekly_date,
+)
 
 
 def test_one_day():
@@ -141,13 +148,6 @@ def test_date_before_2025_01_01():
         get_final_date(date, 11, True, True, True)
 
 
-# TODO: add test for is_weekly_premium, and is_weekly_premium and is_weekly/is_biweekly
-# TODO: add test on a date matching the biweekly date, weekly date
-
-
-from main import BIWEEKLY_START_DATE, WEEKLY_START_DATE
-
-
 def test_date_matching_biweekly_date():
     date = BIWEEKLY_START_DATE
     assert get_final_date(date, 16, True, False, False) == date + timedelta(days=1)
@@ -163,9 +163,6 @@ def test_date_not_matching_weekly_and_biweekly_date():
     assert get_final_date(date, 16, True, True, False) == date + timedelta(days=1)
 
 
-from main import next_biweekly_date
-
-
 def test_date_matching_weekly_and_biweekly_date():
     biweekly_date = next_biweekly_date(BIWEEKLY_START_DATE)
     target = (
@@ -174,3 +171,6 @@ def test_date_matching_weekly_and_biweekly_date():
     assert get_final_date(
         biweekly_date, target, True, True, False
     ) == biweekly_date + timedelta(days=2)
+
+
+# TODO: add test for is_weekly_premium, and is_weekly_premium and is_weekly/is_biweekly

@@ -1,3 +1,5 @@
+"""LeetCode points calculator to determine when you'll reach your target points."""
+
 import calendar
 from argparse import ArgumentParser
 from datetime import UTC, datetime, timedelta
