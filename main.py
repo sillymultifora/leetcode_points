@@ -129,7 +129,11 @@ if __name__ == "__main__":
         default=0,
         help="Current number of streak days.",
     )
-
+    parser.add_argument(
+        "--today-collected",
+        action="store_true",
+        help="Flag indicating you have already collected today's points.",
+    )
     parser.add_argument(
         "--biweekly-contest",
         action="store_true",
@@ -151,6 +155,8 @@ if __name__ == "__main__":
     utc_dt = datetime.now(UTC)
     # we care only about days
     utc_dt = utc_dt.replace(hour=0, minute=0, second=0, microsecond=0)
+    if args.today_collected:
+        utc_dt = utc_dt + timedelta(days=1)
 
     final_date = get_final_date(
         utc_dt,

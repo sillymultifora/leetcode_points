@@ -162,7 +162,7 @@ def test_date_matching_weekly_date():
     assert get_final_date(date, 16, 0, False, True, False) == date + timedelta(days=1)
 
 
-def test_date_not_matching_weekly_and_biweekly_date():
+def test_date_matching_only_weekly():
     date = WEEKLY_START_DATE
     assert get_final_date(date, 16, 0, True, True, False) == date + timedelta(days=1)
 
@@ -212,4 +212,42 @@ def test_date_is_weekly_premium(test_suit):
     )
 
 
-# TODO: add test for is_weekly_premium, and is_weekly_premium and is_weekly/is_biweekly
+@pytest.mark.parametrize(
+    "test_suit",
+    [
+        TestSuit(
+            datetime(year=2025, month=1, day=1, tzinfo=UTC),
+            651,
+            datetime(year=2025, month=2, day=1, tzinfo=UTC),
+            is_weekly=True,
+            is_weekly_premium=True,
+        ),
+        TestSuit(
+            datetime(year=2025, month=1, day=15, tzinfo=UTC),
+            11 * (31 - 14) + 35 * 3 + 10 * 2 + 2 * 5,
+            datetime(year=2025, month=2, day=1, tzinfo=UTC),
+            is_weekly=True,
+            is_weekly_premium=True,
+        ),
+        TestSuit(
+            datetime(year=2025, month=1, day=1, tzinfo=UTC),
+            651 + 35 * 2 + 5 * 2,
+            datetime(year=2025, month=2, day=1, tzinfo=UTC),
+            is_weekly=True,
+            is_weekly_premium=True,
+            is_biweekly=True,
+        ),
+    ],
+)
+def test_date_is_weekly_premium_and_contests(test_suit):
+    assert (
+        get_final_date(
+            test_suit.start_data,
+            test_suit.target,
+            test_suit.streak,
+            test_suit.is_biweekly,
+            test_suit.is_weekly,
+            test_suit.is_weekly_premium,
+        )
+        == test_suit.reference
+    )

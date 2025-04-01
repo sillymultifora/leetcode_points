@@ -1,40 +1,97 @@
-# 🚀 LeetCode Points Progress 🚀
+# 🚀 LeetCode Points Calculator 🚀
 
-Tired of manually calculating when you'll finally hit your LeetCode points goal? 🥱 Let this handy script handle the math and predict your victory date! 🏆 Spend less time crunching numbers and more time crushing problems! 🔥
+A powerful tool to predict when you'll reach your LeetCode points goal! 🎯
 
-## 🚦 Usage
+## 📝 Description
 
+This calculator helps you plan your LeetCode journey by predicting when you'll reach your target points. It takes into account various point sources including daily problems, contests, and premium content.
+
+✨ **Note**: For accurate predictions, run the script either:
+- After collecting **all** today's points
+- Before collecting **any** points for the day (including daily check-in)
+
+⚠️ **Important**: The calculator assumes:
+- You'll collect all available points daily
+- No points from contest prizes are included
+- The predicted date represents the latest possible date achievable through consistent daily problem-solving
+
+## 🚦 Installation
+
+1. Clone the repository:
 ```bash
-python main.py <current> [target] [streak] [--today-collected] [--biweekly-contest] [--weekly-contest] [--weekly-premium]
+git clone https://github.com/yourusername/leetcode-calculator.git
+cd leetcode-calculator
+```
+
+2. Run the script:
+```bash
+python main.py <current> [target] [streak] [options]
 ```
 
 ## 🎯 Arguments
 
-### ✅ Required
+### ✅ Required Arguments
 
-- **`current`** *(integer)*: Your current LeetCode points—show off your progress!
+| Argument | Type | Description |
+|----------|------|-------------|
+| `current` | integer | Your current LeetCode points |
 
-### 🎲 Optional
+### 🎲 Optional Arguments
 
-- **`target`** *(integer, default: 7200)*: Your ultimate LeetCode points goal. Aim high!
-- **`streak`** *(integer, default: 0)*: Your current day streak.
+| Argument | Type | Default | Description |
+|----------|------|---------|-------------|
+| `target` | integer | 7200 | Your target LeetCode points goal |
+| `streak` | integer | 0 | Your current daily streak count |
 
-## 🚩 Optional Flags
+### 🚩 Optional Flags
 
-These cool flags default to `False`. Activate them to level-up your prediction!
+| Flag | Description |
+|------|-------------|
+| `--today-collected` | Indicates you've already collected today's points |
+| `--biweekly-contest` | Includes points from biweekly contest participation |
+| `--weekly-contest` | Includes points from weekly contest participation |
+| `--weekly-premium` | Includes points from weekly premium problems |
 
-- **`--today-collected`**: Already grabbed today's points? Let the script know!
-- **`--biweekly-contest`**: Adds points for being a biweekly contest regular. Stay consistent!
-- **`--weekly-contest`**: Boost your points prediction with weekly contest participation.
-- **`--weekly-premium`**: Solve premium weekly LeetCode problems and rake in extra points!
+## 🎉 Examples
 
-## 🎉 Example
-
-Want to see when you'll celebrate hitting 7200 points, starting from your impressive 3500 points and considering today's progress plus regular contest participation? Easy!
-
+### Basic Usage
 ```bash
-python main.py 3500 --today-collected --weekly-contest --biweekly-contest
+python main.py 3500
 ```
 
-Now kick back, relax, and let the script do the math magic. 🎩✨ Less counting, more coding—happy problem-solving! 💻🧠
+### Advanced Usage
+```bash
+python main.py 3500 10000 5 --today-collected --weekly-contest --biweekly-contest
+```
+
+### Premium User Example
+```bash
+python main.py 5000 15000 --weekly-premium --weekly-contest
+```
+
+## 📊 Point Sources
+
+The calculator considers the following point sources:
+- Daily problems
+- Daily check-in
+- Weekly contests
+- Biweekly contests
+- Premium weekly problems
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🙏 Acknowledgments
+
+- Inspired by the LeetCode community
+- Built with Python for simplicity and reliability
+
+---
+
+Happy coding! 💻🧠 Less counting, more problem-solving! 🚀
 
