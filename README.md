@@ -5,7 +5,7 @@ Tired of manually calculating when you'll finally hit your LeetCode points goal?
 ## 🚦 Usage
 
 ```bash
-python main.py <current> [target] [--today-collected] [--biweekly-contest] [--weekly-contest] [--weekly-premium]
+python main.py <current> [target] [streak] [--today-collected] [--biweekly-contest] [--weekly-contest] [--weekly-premium]
 ```
 
 ## 🎯 Arguments
@@ -17,6 +17,7 @@ python main.py <current> [target] [--today-collected] [--biweekly-contest] [--we
 ### 🎲 Optional
 
 - **`target`** *(integer, default: 7200)*: Your ultimate LeetCode points goal. Aim high!
+- **`streak`** *(integer, default: 0)*: Your current day streak.
 
 ## 🚩 Optional Flags
 
