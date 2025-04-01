@@ -81,17 +81,3 @@ The calculator considers the following point sources:
 ## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🙏 Acknowledgments
-
-- Inspired by the LeetCode community
-- Built with Python for simplicity and reliability
-
----
-
-Happy coding! 💻🧠 Less counting, more problem-solving! 🚀
-
