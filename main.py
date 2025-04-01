@@ -2,7 +2,7 @@
 
 import calendar
 from argparse import ArgumentParser
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 # LC Points constants
 DAILY = 11
@@ -13,8 +13,8 @@ JOIN_TWO_CONTEST = 35
 PREMIUM_WEEKLY = 35
 MONDAY_LUCK = 10
 # LC Date constants
-BIWEEKLY_START_DATE = datetime(2025, 1, 4, tzinfo=UTC)
-WEEKLY_START_DATE = datetime(2025, 1, 5, tzinfo=UTC)
+BIWEEKLY_START_DATE = datetime(2025, 1, 4, tzinfo=timezone.utc)
+WEEKLY_START_DATE = datetime(2025, 1, 5, tzinfo=timezone.utc)
 
 
 def next_biweekly_date(day: datetime) -> datetime:
@@ -26,7 +26,6 @@ def next_weekly_date(day: datetime) -> datetime:
 
 
 def next_premium_weekly_date(date: datetime) -> datetime:
-    # weekly_premium_date = datetime(date.year, date.month, day=1, tzinfo=UTC)
     weekly_premium_date = next_weekly_date(date)
     if weekly_premium_date.month != date.month:  # First day of a month
         weekly_premium_date = datetime.replace(weekly_premium_date, day=1)
@@ -35,12 +34,12 @@ def next_premium_weekly_date(date: datetime) -> datetime:
 
 def is_current_month_fully_solved_till_today(date, streak) -> bool:
     # this needs for 25 and last day of a month points
-    start_month = datetime(date.year, date.month, day=1, tzinfo=UTC)
+    start_month = datetime(date.year, date.month, day=1, tzinfo=timezone.utc)
     return date - timedelta(days=streak) <= start_month
 
 
 def check_date(date: datetime) -> None:
-    min_date = datetime(2025, 1, 1, tzinfo=UTC)
+    min_date = datetime(2025, 1, 1, tzinfo=timezone.utc)
     if date < min_date:
         raise ValueError(f"Date should start from 2025 year, but got {date}")
     if date.hour != 0 or date.minute != 0 or date.second != 0 or date.microsecond != 0:
@@ -68,7 +67,7 @@ def get_final_date(
     current = 0
     biweekly_date = BIWEEKLY_START_DATE
     weekly_date = WEEKLY_START_DATE
-    weekly_premium_date = datetime(date.year, date.month, day=1, tzinfo=UTC)
+    weekly_premium_date = datetime(date.year, date.month, day=1, tzinfo=timezone.utc)
 
     is_month_streak_active = is_current_month_fully_solved_till_today(date, streak)
 
@@ -152,7 +151,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    utc_dt = datetime.now(UTC)
+    utc_dt = datetime.now(timezone.utc)
     # we care only about days
     utc_dt = utc_dt.replace(hour=0, minute=0, second=0, microsecond=0)
     if args.today_collected:

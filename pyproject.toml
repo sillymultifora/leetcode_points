@@ -1,9 +1,11 @@
 [project]
 name = "leetcode-calculator"
 version = "0.1.0"
-description = "Add your description here"
+description = "A tool to predict when you'll reach your LeetCode points goal!"
 readme = "README.md"
-requires-python = ">=3.13"
-dependencies = [
+requires-python = ">=3.9"
+
+[project.optional-dependencies]
+test = [
     "pytest>=8.3.5",
 ]

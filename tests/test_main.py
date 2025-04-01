@@ -1,7 +1,7 @@
 """Tests for the LeetCode points calculator module."""
 
 from dataclasses import dataclass
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import pytest
 
@@ -14,7 +14,7 @@ from main import (
 
 
 def test_one_day():
-    date = datetime(year=2025, month=2, day=1, tzinfo=UTC)
+    date = datetime(year=2025, month=2, day=1, tzinfo=timezone.utc)
     assert get_final_date(date, 11, 0, True, True, True) == date + timedelta(days=1)
 
 
@@ -23,7 +23,7 @@ def test_weeks(weeks):
     days_in_week = 7
     days = days_in_week * weeks
     week_points = 11 * days + 10 * weeks
-    date = datetime(year=2025, month=1, day=1, tzinfo=UTC)
+    date = datetime(year=2025, month=1, day=1, tzinfo=timezone.utc)
     assert get_final_date(
         date, week_points, 0, False, False, False
     ) == date + timedelta(days=days)
@@ -44,25 +44,25 @@ class TestSuit:
     "test_suit",
     [
         TestSuit(
-            datetime(year=2025, month=1, day=25, tzinfo=UTC),
+            datetime(year=2025, month=1, day=25, tzinfo=timezone.utc),
             11,  # no month awards
-            datetime(year=2025, month=1, day=26, tzinfo=UTC),
+            datetime(year=2025, month=1, day=26, tzinfo=timezone.utc),
             False,
             False,
             False,
         ),
         TestSuit(
-            datetime(year=2025, month=1, day=1, tzinfo=UTC),
+            datetime(year=2025, month=1, day=1, tzinfo=timezone.utc),
             456,
-            datetime(year=2025, month=2, day=1, tzinfo=UTC),
+            datetime(year=2025, month=2, day=1, tzinfo=timezone.utc),
             False,
             False,
             False,
         ),
         TestSuit(
-            datetime(year=2025, month=1, day=1, tzinfo=UTC),
+            datetime(year=2025, month=1, day=1, tzinfo=timezone.utc),
             641,
-            datetime(year=2025, month=2, day=1, tzinfo=UTC),
+            datetime(year=2025, month=2, day=1, tzinfo=timezone.utc),
             True,
             False,
             True,
@@ -87,19 +87,19 @@ def test_reference(test_suit):
     "test_suit",
     [
         TestSuit(
-            datetime(year=2025, month=1, day=1, tzinfo=UTC),
+            datetime(year=2025, month=1, day=1, tzinfo=timezone.utc),
             466,
-            datetime(year=2025, month=2, day=1, tzinfo=UTC),
+            datetime(year=2025, month=2, day=1, tzinfo=timezone.utc),
         ),
         TestSuit(
-            datetime(year=2025, month=3, day=31, tzinfo=UTC),
+            datetime(year=2025, month=3, day=31, tzinfo=timezone.utc),
             526 - 50,  # no month award for the first month
-            datetime(year=2025, month=5, day=1, tzinfo=UTC),
+            datetime(year=2025, month=5, day=1, tzinfo=timezone.utc),
         ),
         TestSuit(
-            datetime(year=2025, month=3, day=31, tzinfo=UTC),
+            datetime(year=2025, month=3, day=31, tzinfo=timezone.utc),
             1457 - 50,  # no month award for the first month
-            datetime(year=2025, month=7, day=1, tzinfo=UTC),
+            datetime(year=2025, month=7, day=1, tzinfo=timezone.utc),
         ),
     ],
 )
@@ -121,14 +121,14 @@ def test_is_beweekly(test_suit):
     "test_suit",
     [
         TestSuit(
-            datetime(year=2025, month=3, day=31, tzinfo=UTC),
+            datetime(year=2025, month=3, day=31, tzinfo=timezone.utc),
             616 - 50,  # no month award for the first month
-            datetime(year=2025, month=5, day=1, tzinfo=UTC),
+            datetime(year=2025, month=5, day=1, tzinfo=timezone.utc),
         ),
         TestSuit(
-            datetime(year=2025, month=3, day=31, tzinfo=UTC),
+            datetime(year=2025, month=3, day=31, tzinfo=timezone.utc),
             1172 - 50,  # no month award for the first month
-            datetime(year=2025, month=6, day=1, tzinfo=UTC),
+            datetime(year=2025, month=6, day=1, tzinfo=timezone.utc),
         ),
     ],
 )
@@ -147,7 +147,7 @@ def test_is_beweekly_and_weekly(test_suit):
 
 
 def test_date_before_2025_01_01():
-    date = datetime(year=2024, month=12, day=31, tzinfo=UTC)
+    date = datetime(year=2024, month=12, day=31, tzinfo=timezone.utc)
     with pytest.raises(ValueError):
         get_final_date(date, 11, 0, True, True, True)
 
@@ -181,25 +181,25 @@ def test_date_matching_weekly_and_biweekly_date():
     "test_suit",
     [
         TestSuit(
-            datetime(year=2025, month=1, day=1, tzinfo=UTC),
+            datetime(year=2025, month=1, day=1, tzinfo=timezone.utc),
             631,
-            datetime(year=2025, month=2, day=1, tzinfo=UTC),
+            datetime(year=2025, month=2, day=1, tzinfo=timezone.utc),
         ),
         TestSuit(
-            datetime(year=2025, month=1, day=31, tzinfo=UTC),
+            datetime(year=2025, month=1, day=31, tzinfo=timezone.utc),
             11 + 35,
-            datetime(year=2025, month=2, day=1, tzinfo=UTC),
+            datetime(year=2025, month=2, day=1, tzinfo=timezone.utc),
         ),
         TestSuit(
-            datetime(year=2025, month=1, day=31, tzinfo=UTC),
+            datetime(year=2025, month=1, day=31, tzinfo=timezone.utc),
             11,
-            datetime(year=2025, month=2, day=1, tzinfo=UTC),
+            datetime(year=2025, month=2, day=1, tzinfo=timezone.utc),
             streak=1,
         ),
         TestSuit(
-            datetime(year=2025, month=1, day=31, tzinfo=UTC),
+            datetime(year=2025, month=1, day=31, tzinfo=timezone.utc),
             11 + 35 + 35 + 11,
-            datetime(year=2025, month=2, day=2, tzinfo=UTC),
+            datetime(year=2025, month=2, day=2, tzinfo=timezone.utc),
         ),
     ],
 )
@@ -216,23 +216,23 @@ def test_date_is_weekly_premium(test_suit):
     "test_suit",
     [
         TestSuit(
-            datetime(year=2025, month=1, day=1, tzinfo=UTC),
+            datetime(year=2025, month=1, day=1, tzinfo=timezone.utc),
             651,
-            datetime(year=2025, month=2, day=1, tzinfo=UTC),
+            datetime(year=2025, month=2, day=1, tzinfo=timezone.utc),
             is_weekly=True,
             is_weekly_premium=True,
         ),
         TestSuit(
-            datetime(year=2025, month=1, day=15, tzinfo=UTC),
+            datetime(year=2025, month=1, day=15, tzinfo=timezone.utc),
             11 * (31 - 14) + 35 * 3 + 10 * 2 + 2 * 5,
-            datetime(year=2025, month=2, day=1, tzinfo=UTC),
+            datetime(year=2025, month=2, day=1, tzinfo=timezone.utc),
             is_weekly=True,
             is_weekly_premium=True,
         ),
         TestSuit(
-            datetime(year=2025, month=1, day=1, tzinfo=UTC),
+            datetime(year=2025, month=1, day=1, tzinfo=timezone.utc),
             651 + 35 * 2 + 5 * 2,
-            datetime(year=2025, month=2, day=1, tzinfo=UTC),
+            datetime(year=2025, month=2, day=1, tzinfo=timezone.utc),
             is_weekly=True,
             is_weekly_premium=True,
             is_biweekly=True,
