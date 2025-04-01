@@ -17,28 +17,32 @@ BIWEEKLY_START_DATE = datetime(2025, 1, 4, tzinfo=timezone.utc)
 WEEKLY_START_DATE = datetime(2025, 1, 5, tzinfo=timezone.utc)
 
 
-def next_biweekly_date(day: datetime) -> datetime:
-    return day + timedelta(days=14)
-
-
-def next_weekly_date(day: datetime) -> datetime:
+def add_one_week(day: datetime) -> datetime:
+    """Add one week to the given date."""
     return day + timedelta(days=7)
 
 
+def add_two_weeks(day: datetime) -> datetime:
+    """Add two weeks to the given date."""
+    return add_one_week(add_one_week(day))
+
+
 def next_premium_weekly_date(date: datetime) -> datetime:
-    weekly_premium_date = next_weekly_date(date)
+    """Calculate the next premium weekly problem date."""
+    weekly_premium_date = add_one_week(date)
     if weekly_premium_date.month != date.month:  # First day of a month
         weekly_premium_date = datetime.replace(weekly_premium_date, day=1)
     return weekly_premium_date
 
 
-def is_current_month_fully_solved_till_today(date, streak) -> bool:
-    # this needs for 25 and last day of a month points
+def is_current_month_fully_solved_till_today(date: datetime, streak: int) -> bool:
+    """Check if all problems in the current month up to today are solved."""
     start_month = datetime(date.year, date.month, day=1, tzinfo=timezone.utc)
     return date - timedelta(days=streak) <= start_month
 
 
 def check_date(date: datetime) -> None:
+    """Validate the input date meets the requirements."""
     min_date = datetime(2025, 1, 1, tzinfo=timezone.utc)
     if date < min_date:
         raise ValueError(f"Date should start from 2025 year, but got {date}")
@@ -49,6 +53,7 @@ def check_date(date: datetime) -> None:
 
 
 def check_streak(streak: int) -> None:
+    """Validate the streak count is non-negative."""
     if streak < 0:
         raise ValueError("Streak should be non-negative.")
 
@@ -61,6 +66,7 @@ def get_final_date(
     is_weekly: bool,
     is_weekly_premium: bool,
 ) -> datetime:
+    """Calculate the date when the target points will be reached."""
     check_date(date)
     check_streak(streak)
 
@@ -72,9 +78,9 @@ def get_final_date(
     is_month_streak_active = is_current_month_fully_solved_till_today(date, streak)
 
     while date > biweekly_date:
-        biweekly_date = next_biweekly_date(biweekly_date)
+        biweekly_date = add_two_weeks(biweekly_date)
     while date > weekly_date:
-        weekly_date = next_weekly_date(weekly_date)
+        weekly_date = add_one_week(weekly_date)
     while date > weekly_premium_date:
         weekly_premium_date = next_premium_weekly_date(weekly_premium_date)
 
@@ -98,9 +104,9 @@ def get_final_date(
                 and biweekly_date.isocalendar().week == weekly_date.isocalendar().week
             ):
                 current += JOIN_TWO_CONTEST
-            biweekly_date = next_biweekly_date(biweekly_date)
+            biweekly_date = add_two_weeks(biweekly_date)
         if is_weekly and date == weekly_date:
-            weekly_date = next_weekly_date(weekly_date)
+            weekly_date = add_one_week(weekly_date)
             current += CONTEST
         if date.day == end_day and is_month_streak_active:
             current += MONTH

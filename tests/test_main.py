@@ -8,8 +8,9 @@ import pytest
 from main import (
     BIWEEKLY_START_DATE,
     WEEKLY_START_DATE,
+    add_two_weeks,
     get_final_date,
-    next_biweekly_date,
+    next_premium_weekly_date,
 )
 
 
@@ -168,7 +169,7 @@ def test_date_matching_only_weekly():
 
 
 def test_date_matching_weekly_and_biweekly_date():
-    biweekly_date = next_biweekly_date(BIWEEKLY_START_DATE)
+    biweekly_date = add_two_weeks(BIWEEKLY_START_DATE)
     target = (
         11 * 2 + 5 * 2 + 35
     )  # 2 days of daily + 2 contests participation + 35 days of join two contest
@@ -251,3 +252,102 @@ def test_date_is_weekly_premium_and_contests(test_suit):
         )
         == test_suit.reference
     )
+
+
+def test_monday_luck_bonus():
+    # Test starting on a Monday
+    monday = datetime(
+        year=2025, month=1, day=6, tzinfo=timezone.utc
+    )  # This is a Monday
+    target = 11 + 5  # Daily points + Monday luck bonus
+    assert get_final_date(monday, target, 0, False, False, False) == monday + timedelta(
+        days=1
+    )
+
+    # Test starting on a Sunday (next day should be Monday)
+    sunday = datetime(
+        year=2025, month=1, day=5, tzinfo=timezone.utc
+    )  # This is a Sunday
+    target = 11 * 2 + 5  # Two days of daily points + Monday luck bonus
+    assert get_final_date(sunday, target, 0, False, False, False) == sunday + timedelta(
+        days=2
+    )
+
+
+@pytest.mark.parametrize(
+    "test_suit",
+    [
+        TestSuit(
+            datetime(year=2025, month=1, day=25, tzinfo=timezone.utc),
+            11 + 25,  # Daily points + 25 days streak bonus
+            datetime(year=2025, month=1, day=26, tzinfo=timezone.utc),
+            streak=25,
+        ),
+        TestSuit(
+            datetime(year=2025, month=1, day=31, tzinfo=timezone.utc),
+            11 + 50,  # Daily points + month streak bonus
+            datetime(year=2025, month=2, day=1, tzinfo=timezone.utc),
+            streak=31,
+        ),
+        TestSuit(
+            datetime(year=2025, month=1, day=25, tzinfo=timezone.utc),
+            11 * 7
+            + 10
+            + 25
+            + 50,  # Daily points + Monday luck + 25 days streak + month streak
+            datetime(year=2025, month=2, day=1, tzinfo=timezone.utc),
+            streak=25,
+        ),
+    ],
+)
+def test_month_streak_bonuses(test_suit):
+    assert (
+        get_final_date(
+            test_suit.start_data,
+            test_suit.target,
+            test_suit.streak,
+            False,
+            False,
+            False,
+        )
+        == test_suit.reference
+    )
+
+
+def test_invalid_streak():
+    date = datetime(year=2025, month=1, day=1, tzinfo=timezone.utc)
+    with pytest.raises(ValueError):
+        get_final_date(date, 11, -1, False, False, False)  # Negative streak
+
+
+def test_month_transition_edge_cases():
+    # Test transition from 30-day month to 31-day month
+    date = datetime(year=2025, month=4, day=30, tzinfo=timezone.utc)
+    target = 11 + 50  # Daily points + month streak bonus
+    assert get_final_date(date, target, 30, False, False, False) == date + timedelta(
+        days=1
+    )
+
+    # Test transition from 31-day month to 30-day month
+    date = datetime(year=2025, month=1, day=31, tzinfo=timezone.utc)
+    target = 11 + 50  # Daily points + month streak bonus
+    assert get_final_date(date, target, 31, False, False, False) == date + timedelta(
+        days=1
+    )
+
+
+def test_next_premium_weekly_date():
+    # Test within same month
+    date = datetime(year=2025, month=1, day=1, tzinfo=timezone.utc)
+    next_date = next_premium_weekly_date(date)
+    assert next_date == datetime(year=2025, month=1, day=8, tzinfo=timezone.utc)
+
+    # Test month transition
+    date = datetime(year=2025, month=1, day=29, tzinfo=timezone.utc)
+    next_date = next_premium_weekly_date(date)
+    assert next_date == datetime(year=2025, month=2, day=1, tzinfo=timezone.utc)
+
+    # Test end of month
+    date = datetime(year=2025, month=1, day=31, tzinfo=timezone.utc)
+    next_date = next_premium_weekly_date(date)
+    assert next_date == datetime(year=2025, month=2, day=1, tzinfo=timezone.utc)
