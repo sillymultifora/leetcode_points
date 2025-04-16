@@ -12,6 +12,8 @@ CONTEST = 5
 JOIN_TWO_CONTEST = 35
 PREMIUM_WEEKLY = 35
 MONDAY_LUCK = 10
+CHECK_IN_30_DAY_STREAK = 30
+
 # LC Date constants
 BIWEEKLY_START_DATE = datetime(2025, 1, 4, tzinfo=timezone.utc)
 WEEKLY_START_DATE = datetime(2025, 1, 5, tzinfo=timezone.utc)
@@ -33,6 +35,11 @@ def next_premium_weekly_date(date: datetime) -> datetime:
     if weekly_premium_date.month != date.month:  # First day of a month
         weekly_premium_date = datetime.replace(weekly_premium_date, day=1)
     return weekly_premium_date
+
+
+def next_check_in_30_day_streak_date(date: datetime) -> datetime:
+    """Calculate the next check in 30 day streak date."""
+    return date + timedelta(days=30)
 
 
 def is_current_month_fully_solved_till_today(date: datetime, streak: int) -> bool:
@@ -74,6 +81,9 @@ def get_final_date(
     biweekly_date = BIWEEKLY_START_DATE
     weekly_date = WEEKLY_START_DATE
     weekly_premium_date = datetime(date.year, date.month, day=1, tzinfo=timezone.utc)
+    check_in_30_day_streak_date = next_check_in_30_day_streak_date(
+        date - timedelta(days=streak)
+    )
 
     is_month_streak_active = is_current_month_fully_solved_till_today(date, streak)
 
@@ -83,9 +93,18 @@ def get_final_date(
         weekly_date = add_one_week(weekly_date)
     while date > weekly_premium_date:
         weekly_premium_date = next_premium_weekly_date(weekly_premium_date)
+    while date > check_in_30_day_streak_date:
+        check_in_30_day_streak_date = next_check_in_30_day_streak_date(
+            check_in_30_day_streak_date
+        )
 
     if is_weekly_premium and weekly_premium_date > date and streak == 0:
         current += PREMIUM_WEEKLY  # count current weekly_premium
+    if streak > 0 and date == check_in_30_day_streak_date:
+        current += CHECK_IN_30_DAY_STREAK  # count current check_in_30_days
+        check_in_30_day_streak_date = next_check_in_30_day_streak_date(
+            check_in_30_day_streak_date
+        )
 
     while current < target:
         end_day = calendar.monthrange(date.year, date.month)[1]
@@ -97,6 +116,11 @@ def get_final_date(
         if is_weekly_premium and date == weekly_premium_date:
             current += PREMIUM_WEEKLY
             weekly_premium_date = next_premium_weekly_date(weekly_premium_date)
+        if date == check_in_30_day_streak_date:
+            current += CHECK_IN_30_DAY_STREAK
+            check_in_30_day_streak_date = next_check_in_30_day_streak_date(
+                check_in_30_day_streak_date
+            )
         if is_biweekly and date == biweekly_date:
             current += CONTEST
             if (

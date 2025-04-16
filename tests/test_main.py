@@ -10,6 +10,7 @@ from main import (
     WEEKLY_START_DATE,
     add_two_weeks,
     get_final_date,
+    next_check_in_30_day_streak_date,
     next_premium_weekly_date,
 )
 
@@ -99,7 +100,7 @@ def test_reference(test_suit):
         ),
         TestSuit(
             datetime(year=2025, month=3, day=31, tzinfo=timezone.utc),
-            1457 - 50,  # no month award for the first month
+            1457 - 50 + 30 * 3,  # no month award for the first month
             datetime(year=2025, month=7, day=1, tzinfo=timezone.utc),
         ),
     ],
@@ -351,3 +352,9 @@ def test_next_premium_weekly_date():
     date = datetime(year=2025, month=1, day=31, tzinfo=timezone.utc)
     next_date = next_premium_weekly_date(date)
     assert next_date == datetime(year=2025, month=2, day=1, tzinfo=timezone.utc)
+
+
+def test_next_check_in_30_day_streak_date():
+    date = datetime(year=2025, month=1, day=1, tzinfo=timezone.utc)
+    next_date = next_check_in_30_day_streak_date(date)
+    assert next_date == datetime(year=2025, month=1, day=31, tzinfo=timezone.utc)
